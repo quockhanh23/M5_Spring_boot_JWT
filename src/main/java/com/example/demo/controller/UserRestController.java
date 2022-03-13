@@ -4,7 +4,6 @@ import com.example.demo.models.JwtResponse;
 import com.example.demo.models.Role;
 import com.example.demo.models.StatusUser;
 import com.example.demo.models.User;
-import com.example.demo.repository.StatusUserRepository;
 import com.example.demo.services.RoleService;
 import com.example.demo.services.StatusUserService;
 import com.example.demo.services.UserService;
@@ -44,7 +43,7 @@ public class UserRestController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("")
+    @GetMapping("/findAll")
     public ResponseEntity<Iterable<User>> findAllUser() {
         Iterable<User> users = userService.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
