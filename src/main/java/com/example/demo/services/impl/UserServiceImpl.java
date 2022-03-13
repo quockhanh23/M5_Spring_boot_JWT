@@ -15,9 +15,28 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     @Autowired
     private UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        if (this.checkLogin(user)) {
+            return UserPrinciple.build(user);
+        }
+        boolean enable = false;
+        boolean accountNonExpired = false;
+        boolean credentialsNonExpired = false;
+        boolean accountNonLocked = false;
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), enable, accountNonExpired, credentialsNonExpired,
+                accountNonLocked, null);
+    }
+
 
     @Override
     public void save(User user) {
@@ -69,7 +88,7 @@ public class UserServiceImpl implements UserService {
         boolean isCorrectUser = false;
         for (User currentUser : users) {
             if (currentUser.getUsername().equals(user.getUsername())
-                    && user.getPassword().equals(currentUser.getPassword()) &&
+                    && user.getPassword().equals(currentUser.getPassword())&&
                     currentUser.isEnabled()) {
                 isCorrectUser = true;
             }
@@ -93,33 +112,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isCorrectConfirmPassword(User user) {
         boolean isCorrentConfirmPassword = false;
-        if (user.getPassword().equals(user.getConfirmPassword())) {
+        if(user.getPassword().equals(user.getConfirmPassword())){
             isCorrentConfirmPassword = true;
         }
         return isCorrentConfirmPassword;
     }
-
     @Override
-    public void delete(User entity) {
-        userRepository.delete(entity);
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        if (this.checkLogin(user)) {
-            return UserPrinciple.build(user);
-        }
-        boolean enable = false;
-        boolean accountNonExpired = false;
-        boolean credentialsNonExpired = false;
-        boolean accountNonLocked = false;
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), enable, accountNonExpired, credentialsNonExpired,
-                accountNonLocked, null);
+    public void delete(User user){
+        userRepository.delete(user);
     }
 }
