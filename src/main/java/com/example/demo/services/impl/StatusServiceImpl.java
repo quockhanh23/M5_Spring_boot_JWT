@@ -28,4 +28,9 @@ public class StatusServiceImpl implements StatusUserService {
     public void save(StatusUser statusUser) {
 
     }
+
+    @Override
+    public Optional<StatusUser> findByName(String name) {
+        return statusUserRepository.findByName(name);
+    }
 }

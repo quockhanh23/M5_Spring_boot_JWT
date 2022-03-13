@@ -1,13 +1,9 @@
 package com.example.demo.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,34 +16,23 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Size(min = 2, max = 30)
+    @Column(nullable = false, length = 100)
     private String fullName;
 
-    @NotEmpty
     private int age;
 
-    @NotEmpty
-    @Size(min = 6, max = 15)
     private String numberPhone;
 
-    @Size(max = 20)
     @Column(unique = true, nullable = false)
-    @Email
     private String email;
 
-    @Size(min = 3, max = 20)
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Size(min = 3)
     @Column(nullable = false)
-    @JsonIgnore
     private String password;
 
-    @Size(min = 3)
     @Column(nullable = false)
-    @JsonIgnore
     private String confirmPassword;
 
     @ManyToOne
